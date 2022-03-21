@@ -36,8 +36,18 @@ exports.findAll = (req, res) => {
 };
 
 exports.update = (req, res) => {
-  console.log(req.body.star);
   Restaurant.findByIdAndUpdate(req.params.id, { star: req.body.star })
-    .then((data) => res.send(data))
+    .then(() => {
+      Restaurant.find()
+        .then((data) => {
+          res.send(data);
+        })
+        .catch((err) => {
+          res.status(500).send({
+            message:
+              err.message || "Some error occurred while retrieving products.",
+          });
+        });
+    })
     .catch((error) => console.log(error));
 };
